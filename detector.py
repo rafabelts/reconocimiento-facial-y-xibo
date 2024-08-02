@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from camera import get_camera
-from dataSmoothing import dataSmoothing
+from filter import filter
 
 def detector():
     camera = get_camera()
@@ -30,7 +30,7 @@ def detector():
                                               maxSize=(200, 200),
                                               )
         face_detected = False
-        stable_faces = dataSmoothing(previous_faces, faces, max_faces_to_track, min_detection_stability)
+        stable_faces = filter(previous_faces, faces, max_faces_to_track, min_detection_stability)
 
         for(x, y, w, h) in stable_faces:
             face_detected = True

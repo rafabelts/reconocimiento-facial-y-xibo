@@ -1,6 +1,6 @@
 import numpy as np
 
-def dataSmoothing(previous_faces, faces, max_faces_to_track, min_detection_stability):
+def filter(previous_faces, faces, max_faces_to_track, min_detection_stability):
     previous_faces.append(faces)
     if len(previous_faces) > max_faces_to_track:
         previous_faces.pop(0)
