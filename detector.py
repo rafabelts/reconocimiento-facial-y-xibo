@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from filter import filter
 import time
+from xibo import reloadContent
 
 def process_frame(
         camera, 
@@ -40,7 +41,8 @@ def detectedFace(stable_faces, face_detection_start_time):
 
             # Si lleva de 3 segundos en adelante se manda un mensaje y se reinicia para la prox deteccion
             if time_detected >= 3:
-                print(f'Face {i} detected for 3 seconds.')
+                print(f"Face {i} detected for 3 seconds.")
+                reloadContent('4')
                 # Si una de las caras se detecta por 3 segundos se reinician los demas tiempos
                 for i in list(face_detection_start_time.keys()):
                     face_detection_start_time[i] = time.time()  
