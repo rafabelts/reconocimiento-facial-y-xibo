@@ -24,25 +24,32 @@ def process_frame(
                                           maxSize=(200, 200))
     
     stable_faces = filter(previous_faces, faces, max_faces_to_track, min_detection_stability)
-    for (x, y, w, h) in stable_faces:
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
     
     return frame, stable_faces
 
-def detectedFace(stable_faces, face_detection_start_time):
+def detectedFace(stable_faces, face_detection_start_time, detection_pause_time, detection_enabled_time):
+    current_time = time.time()
+
+    if current_time < detection_enabled_time:
+        pass
+
     # Iteramos entre las caras detectadas
     for i, face in enumerate(stable_faces):
         # Si el indice no se encuentra en los tiempos inicalizamos un tiempo
         if i not in face_detection_start_time:
             face_detection_start_time[i] = time.time()
+
         # Si ya se encuentra calculamos el tiempo q lleva detectado el rostro
         else:
-            time_detected = time.time() - face_detection_start_time[i]
+            time_detected = current_time - face_detection_start_time[i]
 
             # Si lleva de 3 segundos en adelante se manda un mensaje y se reinicia para la prox deteccion
             if time_detected >= 3:
-                print(f"Face {i} detected for 3 seconds.")
-                reloadContent('4')
+                reloadContent(4)
+
+                # Desactiva el detector mientras se reproduce el video
+                detection_enabled_time = current_time + detection_pause_time
+
                 # Si una de las caras se detecta por 3 segundos se reinician los demas tiempos
                 for i in list(face_detection_start_time.keys()):
                     face_detection_start_time[i] = time.time()  

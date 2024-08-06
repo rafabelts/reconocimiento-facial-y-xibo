@@ -1,6 +1,7 @@
 import requests
 import os
 from dotenv import load_dotenv
+from requests.sessions import preferred_clock
 
 
 load_dotenv()
@@ -25,29 +26,25 @@ def getToken():
     else:
         return 'Error'
 
-def reloadContent(displayId):
-    cms_url = 'https://icsicorp.xibo.cloud/api'
 
+
+def reloadContent(display_group_id):
     access_token = getToken()
-    display_id=displayId
-    command_url =  f'{cms_url}/displaygroup/{display_id}/action/command'
-    command = 'SCHEDULE_NOW'
-
+    cms_url = 'https://icsicorp.xibo.cloud/api'
+    webhook_url = f"{cms_url}/displaygroup/{display_group_id}/action/triggerWebhook"
+    
     headers = {
-        'Authorization': f'Bearer {access_token}',
-        'Content-Type': 'application/json' 
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
     }
-
-    data = {
-        'command': command,
-        'params': {
-            'command': 'restart'
-        }
+    
+    payload = {
+        "triggerCode": "copilot" 
     }
+    
+    response = requests.post(webhook_url, headers=headers, json=payload)
 
-    response = requests.post(command_url, headers=headers, json=data)
-
-    if response.status_code == 200:
-        print('Reiniciado')
+    if response.status_code == 204:
+        return "Reloaded"
     else:
-        print('Error al reiniciar: ', response.json())
+        return "Failed"
