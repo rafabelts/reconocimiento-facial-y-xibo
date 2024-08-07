@@ -45,6 +45,6 @@ def reloadContent(display_group_id):
     response = requests.post(webhook_url, headers=headers, json=payload)
 
     if response.status_code == 204:
-        return "Reloaded"
+        print("Reloaded")
     else:
-        return "Failed"
+        print("Error")

@@ -5,7 +5,8 @@ from camera import get_cameras
 from detector import process_frame, detectedFace
 
 def main():
-    while True:
+    running_program = True
+    while running_program:
         try:
             cameras = get_cameras()
             face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -17,7 +18,7 @@ def main():
             max_faces_to_track = 3 
             min_detection_stability = 3
             face_detection_start_time = {}
-            detection_pause_time = 10  # Pausa de 5 segundos después de detectar un rostro por 3 segundos
+            detection_pause_time = 15  # Pausa de 5 segundos después de detectar un rostro por 3 segundos
             detection_enabled_time = 0  # Inicialmente la detección está habilitada
 
             while True:
@@ -40,6 +41,7 @@ def main():
                         cv2.imshow(f'Camera {camera_index}', frame)
         
                 if cv2.waitKey(1) & 0xFF == ord('q'):
+                    running_program = False
                     break
 
             for _, camera in cameras:
