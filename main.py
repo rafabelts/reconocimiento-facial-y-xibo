@@ -18,8 +18,6 @@ def main():
             max_faces_to_track = 3 
             min_detection_stability = 3
             face_detection_start_time = {}
-            detection_pause_time = 15  # Pausa de 5 segundos después de detectar un rostro por 3 segundos
-            detection_enabled_time = 0  # Inicialmente la detección está habilitada
 
             while True:
                 for camera_index, camera in cameras:
@@ -35,7 +33,7 @@ def main():
                         min_detection_stability
                     )
 
-                    detectedFace(stable_faces, face_detection_start_time, detection_pause_time, detection_enabled_time)
+                    detectedFace(stable_faces, face_detection_start_time)
 
                     if frame is not None:
                         cv2.imshow(f'Camera {camera_index}', frame)

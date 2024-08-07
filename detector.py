@@ -30,12 +30,8 @@ def process_frame(
     
     return frame, stable_faces
 
-def detectedFace(stable_faces, face_detection_start_time, detection_pause_time, detection_enabled_time):
+def detectedFace(stable_faces, face_detection_start_time):
     current_time = time.time()
-
-    if current_time < detection_enabled_time:
-        print("Detector paused")
-        pass
 
     # Iteramos entre las caras detectadas
     for i, face in enumerate(stable_faces):
@@ -51,14 +47,10 @@ def detectedFace(stable_faces, face_detection_start_time, detection_pause_time, 
             if time_detected >= 3:
                 print("Pasaron 3 segundos")
                 reloadContent('4')
-
-                # Desactiva el detector mientras se reproduce el video
-                detection_enabled_time = current_time + detection_pause_time
-
                 # Si una de las caras se detecta por 3 segundos se reinician los demas tiempos
                 for i in list(face_detection_start_time.keys()):
                     face_detection_start_time[i] = time.time()  
-
+                time.sleep(15)
 
     # Se eliminan las caras que ya no estan siendo detectadas
     detected_faces = set(range(len(stable_faces)))
