@@ -49,7 +49,9 @@ def detectedFace(stable_faces, face_detection_start_time):
                 reloadContent('4')
                 # Si una de las caras se detecta por 3 segundos se reinician los demas tiempos
                 for i in list(face_detection_start_time.keys()):
-                    face_detection_start_time[i] = time.time()  
+                    face_detection_start_time[i] = time.time() 
+
+                print("Detector stopping for 15 seconds...")
                 time.sleep(15)
 
     # Se eliminan las caras que ya no estan siendo detectadas
