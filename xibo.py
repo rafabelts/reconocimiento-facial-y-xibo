@@ -39,7 +39,7 @@ def reloadContent(display_group_id):
     }
     
     payload = {
-        "triggerCode": "copilot" 
+        "triggerCode": "reinicio" 
     }
     
     response = requests.post(webhook_url, headers=headers, json=payload)
