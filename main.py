@@ -19,6 +19,8 @@ def main():
             min_detection_stability = 3
             face_detection_start_time = {}
 
+            last_detected_faces = {}
+
             while True:
                 for camera_index, camera in cameras:
                     camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
@@ -32,8 +34,7 @@ def main():
                         max_faces_to_track,
                         min_detection_stability
                     )
-
-                    detectedFace(stable_faces, face_detection_start_time)
+                    detectedFace(stable_faces, face_detection_start_time, last_detected_faces)
 
                     if frame is not None:
                         cv2.imshow(f'Camera {camera_index}', frame)

@@ -28,34 +28,39 @@ def process_frame(
     for (x, y, w, h) in stable_faces:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
     
-    return frame, stable_faces
+    return frame, np.array(stable_faces, dtype=np.int32)
 
-def detectedFace(stable_faces, face_detection_start_time):
+def detectedFace(stable_faces, face_detection_start_time, last_detected_faces):
     current_time = time.time()
-
-    # Iteramos entre las caras detectadas
     for i, face in enumerate(stable_faces):
-        # Si el indice no se encuentra en los tiempos inicalizamos un tiempo
         if i not in face_detection_start_time:
-            face_detection_start_time[i] = time.time()
+            face_detection_start_time[i] = current_time
+            last_detected_faces[i] = {
+                'face': np.array(face, dtype=np.int32),
+                'face_already_detected': False
+            }
 
-        # Si ya se encuentra calculamos el tiempo q lleva detectado el rostro
         else:
             time_detected = current_time - face_detection_start_time[i]
 
-            # Si lleva de 3 segundos en adelante se manda un mensaje y se reinicia para la prox deteccion
-            if time_detected >= 3:
-                print("Pasaron 3 segundos")
-                reloadContent('4')
-                # Si una de las caras se detecta por 3 segundos se reinician los demas tiempos
-                for i in list(face_detection_start_time.keys()):
-                    face_detection_start_time[i] = time.time() 
+            if np.array_equal(face, last_detected_faces[i]['face']):
+                if time_detected >= 3 and not last_detected_faces[i]['face_already_detected']:
+                    print("Pasaron 3 segundos")
+                    reloadContent(4)
+                    last_detected_faces[i]['face_already_detected'] = True
+                else:
+                    print(f"Cara {i} detectada continuamente. Pausando por 5 segundos...")
+                    time.sleep(5)
+                    face_detection_start_time[i] = current_time
+            else:
+                if time_detected >= 5:
+                    face_detection_start_time[i] = current_time
+                    last_detected_faces[i]['face_already_detected'] = False
+                    last_detected_faces[i]['face'] = np.array(face, dtype=np.int32)
 
-                print("Detector stopping for 15 seconds...")
-                time.sleep(15)
-
-    # Se eliminan las caras que ya no estan siendo detectadas
+    # Elimina las caras que ya no se detectan
     detected_faces = set(range(len(stable_faces)))
     for i in list(face_detection_start_time.keys()):
         if i not in detected_faces:
+            del last_detected_faces[i]
             del face_detection_start_time[i]
